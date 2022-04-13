@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../js/jquery-3.6.0.js"></script>
+    <script src="../bootstrap/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="../bootstrap/bootstrap.min.css">
+    <script src="../js/vue.js"></script>
+    <script src="../js/jquery.form.js"></script>
+    <style>
+        body{
+            background: url("../img/1.png");
+            background-size: 100% 123%;
+        }
+        #head{
+            width: 100%;
+            height: 100px;
+            border-bottom: 1px solid black;
+            font-family: cursive;
+            font-size: 60px;
+            text-align: center;
+        }
+        .left_ul{
+            width: 15%;
+            background: #5891cd;
+            float: left;
+        }
+        .list{
+            /*height: 50px;*/
+            /*line-height: 50px;*/
+            border-bottom: 1px solid rgba(0,0,0,.125);
+        }
+        .list_l{
+            padding: 10px 15px;
+            background: #2DC4CB;
+            color: black;
+            opacity: 0.5;
+        }
+        .hide_box{
+            display: none;
+        }
+        .bss{
+            padding: 10px 15px;
+            background: #0b5ed7;
+        }
+        .right_list{
+            float: left;
+            width: 85%;
+            height: 800px;
+        }
+    </style>
+</head>
+<body>
+<div id="vue_div">
+    <div id="head">
+        北京工商管理系统
+    </div>
+    <div class="left_ul">
+        <div class="left_list">
+            <div @click="handleSlide" class="list" v-for="item in manages">
+                <div class="list_l">
+                    {{item.displayName}}
+                </div>
+                <div class="hide_box">
+                    <div class="bss" v-for="itm in item.sublist">
+                        {{itm.displayName}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="right_list"></div>
+</div>
+<script>
+    const VueApp = {
+        data() {
+            return {
+                manages: selsysfun()
+            }
+        },
+        methods:{
+
+        }
+    }
+    const app = Vue.createApp(VueApp).mount("#vue_div")
+
+    function selsysfun() {
+        let list;
+        $.ajax({
+            type: "post",
+            url: "../SysfunServlet?flag=selsysfun",
+            dataType: "json",
+            async: false,
+            success: function (json) {
+                list = json;
+                console.log(json)
+            }
+        })
+        return list;
+    }
+
+    $(".list").click(function (){
+        // $(".hide_box").stop().slideUp();
+        $(this).children(".hide_box").slideToggle();
+    })
+
+</script>
+</body>
+</html>

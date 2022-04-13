@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="bootstrap/jquery3.6.js"></script>
+    <script src="bootstrap/jquery.form.js"></script>
+    <script src="bootstrap/jquery.validate.min.js"></script>
+</head>
+<style>
+    .error{
+        color: red;
+    }
+</style>
+<body>
+<form action="TestServlet" method="post" id="form">
+    <fieldset>
+        <legend>输入您的名字，邮箱，URL，备注。</legend>
+        <p>
+            <label for="cname">Name (必需, 最小两个字母)</label>
+            <input id="cname" name="userName" type="text">
+        <p>
+            密码<input name="password" type="text">
+        </p>
+        </p>
+        <p>
+            <label for="cemail">E-Mail (必需)</label>
+            <input id="cemail" type="email" name="email">
+        </p>
+        <p>
+            <label for="curl">URL (可选)</label>
+            <input id="curl" type="url" name="url">
+        </p>
+        <p>
+            <label for="ccomment">备注 (必需)</label>
+            <textarea id="ccomment" name="comment"></textarea>
+        </p>
+        <p>
+            <button type="submit">提交</button>
+        </p>
+    </fieldset>
+</form>
+<script>
+    $().ready(function () {
+// 在键盘按下并释放及提交后验证提交表单
+        $("#form").validate({
+            rules: { // 规则 key:value等形式，key是要添加规则的name值
+                userName: {
+                    required: true // required 必须的
+                },
+                password:{
+                    required: true,
+                    minlength:6
+                }
+            },
+            messages: { // 定义提示信息
+                userName: "必须填写",
+                password:{
+                    required:"必填",
+                    minlength:"不能少于6位"
+                }
+            },
+            submitHandler:function (form) { // 设置其他提交表单的方式
+                $(form).ajaxSubmit(function (data) { // 成功回调函数
+                    if(data=="1"){
+                        alert("验证码错误")
+                    }
+                    if(data=="2"){
+                        alert("帐号或密码错误")
+                    }
+                    if(data=="3"){
+                        location.href="index.html";
+                    }
+                });
+            }
+        })
+    });
+</script>
+</body>
+</html>

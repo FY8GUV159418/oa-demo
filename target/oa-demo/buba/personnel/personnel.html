@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>部门主页</title>
+    <link rel="stylesheet" href="../../bootstrap/bootstrap.min.css">
+    <script src="../../js/jquery-3.6.0.js"></script>
+    <script src="../../js/jquery.js"></script>
+    <script src="../../js/vue.js"></script>
+    <script src="../../bootstrap/bootstrap.bundle.min.js"></script>
+    <style>
+        body{
+            background: url("../../img/部门.png");
+            background-size: 100% 200%;
+        }
+        *{
+            margin: 0;
+            padding: 0;
+        }
+        #main{
+            margin-top: 50px;
+            position: relative;
+        }
+        p{
+            width: 100%;
+            text-align: center;
+            font-size: 30px;
+            font-family: 宋体;
+        }
+        .btn_upd{
+            position: absolute;
+            right: 15px;
+            top: -35px;
+        }
+        #dlt{
+            margin-left: 20px;
+        }
+        .input{
+            margin-left: 15px;
+        }
+        .in1{
+            margin-left: 47px;
+        }
+        .a1{
+            margin-left: 110px;
+        }
+        </style>
+
+</head>
+<body>
+<div id="main">
+    <p>部门管理</p>
+    <div class="btn_upd">
+        <button id="add" type="button" class="btn btn-success "data-bs-toggle="offcanvas" data-bs-target="#offcanvasRight" aria-controls="offcanvasRight">添加</button>
+        <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasRight" aria-labelledby="offcanvasRightLabel">
+            <div class="offcanvas-header">
+                <h2 id="offcanvasRightLabel">添加部门信息</h2>
+                <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+            </div>
+            <div class="offcanvas-body">
+                <div class="container mt-3">
+                    <form id="form-add" action="">
+                    <h5>添加部门信息</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">部门名称：<input type="text" class="input" name="departName"></li>
+                        <li class="list-group-item">部门负责人：<input type="text" name="principalUser"></li>
+                        <li class="list-group-item">联系电话：<input type="text" class="input" name="connectTeNo"></li>
+                        <li class="list-group-item">移动电话：<input type="text" class="input" name="connectMobileTelNo"></li>
+                        <li class="list-group-item">传真：<input type="text" class="in1" name="faxes"></li>
+                        <li class="list-group-item">
+                            <button class="btn btn-success a1" @click="addDate">添加成功</button>
+                        </li>
+                    </ul>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <button id="dlt" type="button" class="btn btn-danger"  @click="delDepartment">删除</button>
+    </div>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th scope="col"><input type="checkbox"></th>
+            <th scope="col">ID</th>
+            <th scope="col">部门名称</th>
+            <th scope="col">部门负责人</th>
+            <th scope="col">联系电话</th>
+            <th scope="col">移动电话</th>
+            <th scope="col">传真</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in list" :key="item.departId">
+            <th><input type="checkbox" v-model="delDepartmentId" :value="item.departId"></th>
+            <th scope="row">{{item.departId}}</th>
+            <td>{{item.departName}}</td>
+            <td>{{item.principalUser}}</td>
+            <td>{{item.connectTeNo}}</td>
+            <td>{{item.connectMobileTelNo}}</td>
+            <td>{{item.faxes}}</td>
+            <td>
+                <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample">
+                    修改
+                </button>
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+                    <div class="offcanvas-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <div>
+                            <div class="container mt-3" >
+                                <h5>修改部门信息</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">部门名称：<input type="text" class="input" name="departName"></li>
+                                    <li class="list-group-item">部门负责人：<input type="text" name="principalUser"></li>
+                                    <li class="list-group-item">联系电话：<input type="text" class="input" name="connectTeNo"></li>
+                                    <li class="list-group-item">移动电话：<input type="text" class="input" name="connectMobileTelNo"></li>
+                                    <li class="list-group-item">传真：<input type="text" class="in1" name="faxes"></li>
+                                    <li class="list-group-item">
+                                        <button class="btn btn-success a1" >修改成功</button>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script>
+    $(function (){
+        const  vue_app = ({
+            data(){
+                return{
+                    list:getMsg(),
+                    addDepartDate:{
+                        departName:"",
+                        principalUser:"",
+                        connectTeNo:"",
+                        connectMobileTelNo:"",
+                        faxes:"",
+                    },
+                    delDepartmentId:[]
+                }
+            },
+            methods:{
+              addDate:function (){//添加
+                  $.ajax({
+                      type: "post",
+                      url: "../../DepartinfoServlet?flag=insert",
+                      data:$("#form-add").serialize(),
+                      success:function (res) {
+                          location.reload()
+                      }
+                  })
+              },
+                delDepartment: function (){
+                    //获取要删除的学生id
+                    if (this.delDepartmentId.length === 0) {
+                        alert("没有要删除的信息")
+                        return;
+                    }
+                    $.ajax({
+                        type:"post",
+                        url:"../../DepartinfoServlet?flag=delete",
+                        data:{
+                            "ids" : this.delDepartmentId.join(",")
+                        },
+                        success:function (data){
+                            location.reload()
+                        }
+                    })
+                }
+
+            },
+            mounted(){
+                console.log(this.list)
+            }
+        })
+        const vueApp = Vue.createApp(vue_app).mount("#main")
+    })
+
+    /**
+     *查询
+     * @returns {*}
+     */
+    function getMsg(){
+        let list;
+        $.ajax({
+            type:"post",
+            url:"../../DepartinfoServlet?flag=select",
+            async:false,
+            dataType:"json",
+            success(res){
+                list = res
+            }
+        })
+        return list
+    }
+</script>
+</body>
+</html>
