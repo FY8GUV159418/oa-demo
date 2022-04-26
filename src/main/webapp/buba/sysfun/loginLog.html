@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录日志</title>
+    <script src="../../js/vue.js"></script>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/jquery-3.6.0.js"></script>
+</head>
+<body>
+<div id="login">
+    <div class="container mt-3">
+        <h2>登陆日志</h2>
+        <table class="table table-hover">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>登陆者</th>
+                <th>登录时间</th>
+                <th>成功/失败</th>
+                <th>IP</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="s in loginLog">
+                <td>{{s.loginId}}</td>
+                <td>{{s.userName}}</td>
+                <td>{{s.loginTime}}</td>
+                <td>{{s.ifSuccess==1?'成功':'失败'}}</td>
+                <td>{{s.loginUserIp}}</td>
+                <td>{{s.loginDesc}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</body>
+<script>
+    const loginLog = {
+        data () {
+            return {
+                loginLog:selLog()
+            }
+        }
+    }
+    const app = Vue.createApp(loginLog).mount("#login");
+    function selLog(){
+        let loginLog
+        $.ajax({
+            type:"post",
+            url:"../../LoginLogServlet?flag=select",
+            async:false,
+            dataType:"json",
+            success:function (json){
+                console.log(json)
+                loginLog = json
+            }
+        })
+        return loginLog
+    }
+</script>
+</html>

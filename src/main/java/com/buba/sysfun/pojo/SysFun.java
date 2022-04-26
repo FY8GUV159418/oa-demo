@@ -6,17 +6,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class Sysfun {
+public class SysFun {
     private int nodeId;
     private String displayName;
     private String nodeURL;
     private int displayOrder;
     private int parentNodeId;
+    private int roleId;
 
-    private List<Sysfun>sublist = new ArrayList<>();
+    private List<SysFun> sysfunList = new ArrayList<>();
 
-    public void add(Sysfun m) {
-        sublist.add(m);
+    public void add(SysFun sysfun) {
+        sysfunList.add(sysfun);
     }
 }
 

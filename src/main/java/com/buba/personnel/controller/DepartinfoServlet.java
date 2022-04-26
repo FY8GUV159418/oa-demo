@@ -21,17 +21,33 @@ public class DepartinfoServlet extends BaseServlet {
 
     @Override
     public void doRequest(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
+
         String flag = req.getParameter("flag");
-        //查询部门
-        if("insert".equals(flag)){
+        if("insert".equals(flag)){//添加
             this.addDepartinfo(req,resp);
         }
-        if ("select".equals(flag)){
+        if ("select".equals(flag)){//查询
             this.selDp(req, resp);
         }
-        if ("delete".equals(flag)){
+        if ("delete".equals(flag)){//删除
+            this.delDp(req,resp);
+        }
+        if ("update".equals(flag)){//修改
             this.upDp(req,resp);
         }
+    }
+
+    /**
+     * 修改
+     * @param req
+     * @param resp
+     */
+    private void upDp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+        //获取要修改的数据
+        Map<String,String> param = getParam(req);
+        int count = departinfoService.upDp(param);
+        //返回浏览器页面
+        resp.getWriter().write(count+"");
     }
 
     /**
@@ -39,9 +55,9 @@ public class DepartinfoServlet extends BaseServlet {
      * @param req
      * @param resp
      */
-    private void upDp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void delDp(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String ids = req.getParameter("ids");
-        int count = departinfoService.upDp(ids);
+        int count = departinfoService.delup(ids);
         resp.getWriter().write(JSON.toJSONString(count+""));
     }
 

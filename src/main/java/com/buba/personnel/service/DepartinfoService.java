@@ -24,7 +24,12 @@ public interface DepartinfoService {
      * @param ids
      * @return
      */
-    int upDp(String ids);
+    int delup(String ids);
 
-
+    /**
+     * 修改
+     * @param param
+     * @return
+     */
+    int upDp(Map<String, String> param);
 }

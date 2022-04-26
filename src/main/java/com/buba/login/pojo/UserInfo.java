@@ -4,12 +4,14 @@ import lombok.Data;
 
 @Data
 public class UserInfo {
-    private String UserId;
-    private String UserName;
-    private String PassWord;
-    private int DepartId;
-    private int Gender;
-    private int RoleId;
-    private int UserState;
+    private String userId;
+    private String userName;
+    private String passWord;
+    private int departId;
+    private int gender;
+    private int roleId;
+    private int userState;
+    private String roleName;
+    private String departName;
 }
 
