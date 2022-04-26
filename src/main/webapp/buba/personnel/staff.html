@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>员工表</title>
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="../../js/jquery-3.6.0.js"></script>
+    <script src="../../js/jquery.js"></script>
+    <script src="../../js/vue.js"></script>
+    <style>
+        body{
+            background: url("../../img/2.jpg");
+            background-size: 100% 100%;
+        }
+
+        h5{
+            text-align: center;
+        }
+        p{
+            margin-top: 30px;
+            text-align: center;
+            font-size: 30px;
+            font-family: 宋体;
+            margin-bottom: 50px;
+        }
+        .cx{
+            margin-left: 20px;
+            float: left;
+            margin-bottom: 20px;
+            margin-top: 5px;
+        }
+        .an{
+            float: right;
+            margin-right: 25px;
+        }
+        .fy{
+            display: flex;
+            flex-wrap: wrap;
+            align-content: stretch;
+            justify-content: center;
+        }
+        .xlk{
+            width: 186px;
+            height: 30px;
+        }
+        .xl{
+            width: 186px;
+            height: 30px;
+            margin-left: 25px;
+        }
+        li{
+            text-align: center;
+            list-style-type: none;
+        }
+        .mm{
+            margin-left: 30px;
+        }
+        .ss{
+            margin-left: 10px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+<div id="main">
+    <p>员工管理</p>
+    <div>
+        <div class="cx">姓名：<input type="text"  v-model="userName"></div>
+        <div class="cx">部门：<input type="text" v-model="departName"></div>
+        <button class="ss btn btn-secondary" @click="search">搜索</button>
+        <div class="an"><button type="button" class="btn btn-info" @click="delUserinfo">删除</button></div>
+        <div class="an">
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+                添加
+            </button>
+        </div>
+        <!-- 模态框 -->
+        <div class="modal fade" id="myModal">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- 模态框头部 -->
+                    <div class="modal-header">
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <!-- 模态框内容 -->
+                    <div class="modal-body">
+                        <form id="form-add" action="">
+                            <h5>添加员工信息</h5>
+                            <ul class="list-group">
+                                <li>ID：<input type="text" name="userId"></li>
+                                <li class="list-group-item">姓名：<input type="text" name="userName"></li>
+                                <li class="list-group-item">密码：<input type="text" class="input mm" name="password"></li>
+                                <li class="list-group-item">
+                                    所在部门：<label >
+                                    <select name="departId" class="xlk">
+                                        <option v-for="item in list.departList" :value="item.departId">{{item.departName}}</option>
+                                    </select>
+                                </label>
+                                </li>
+                                <li class="list-group-item">性别：
+                                    <label >
+                                        <select name="gender" class="xl">
+                                            <option value="1">男</option>
+                                            <option value="0">女</option>
+                                        </select>
+                                    </label>
+                                </li>
+                                <li class="list-group-item">角色：
+                                    <input type="text" name="roleId"></li>
+                                <li class="list-group-item">
+                                    <button class="btn btn-success a1" @click="addDate">添加成功</button>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <td><input type="checkbox"></td>
+            <th scope="col">ID</th>
+            <th scope="col">姓名</th>
+            <th scope="col">密码</th>
+            <th scope="col">所在部门ID</th>
+            <th scope="col">性别</th>
+            <th scope="col">角色</th>
+            <th scope="col">用户状态</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr v-for="item in list.pagination.list" :key="item.userId">
+            <td><input type="checkbox" v-model="delUserinfoId" :value="item.userId"></td>
+            <th scope="row">{{item.userId}}</th>
+            <td>{{item.userName}}</td>
+            <td>{{item.password}}</td>
+            <td>{{item.departName}}</td>
+            <td>{{item.gender == 1 ? "男" : "女"}}</td>
+            <td>{{item.roleName}}</td>
+            <td>{{item.userState}}</td>
+            <td>
+                <button type="button" class="btn btn-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasExample" aria-controls="offcanvasExample"
+                        @click="upData(item)">
+                    修改
+                </button>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+    <nav aria-label="Page navigation example" class="fy">
+        <div >
+            <ul class="pagination">
+                <li @click="toPage(1)" class="page-item"><a class="page-link" >首页</a></li>
+                <li v-if="list.pagination.page > 1" @click="toPage(list.pagination.page-1)" class="page-item"><a class="page-link" >上一页</a></li>
+                <li  class="page-item"><a class="page-link" >{{list.pagination.page}}</a></li>
+                <li v-if="list.pagination.page < list.pagination.total" @click="toPage(list.pagination.page+1)" class="page-item"><a class="page-link" >下一页</a></li>
+                <li @click="toPage(list.pagination.total)" class="page-item"><a class="page-link" >尾页</a></li>
+            </ul>
+        </div>
+    </nav>
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasExample" aria-labelledby="offcanvasExampleLabel">
+        <div class="offcanvas-header">
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div>
+                <div class="container mt-3" >
+                    <h5>修改员工信息</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item">员工姓名：<input type="text" class="input" name="userName" v-model="dep.userName"></li>
+                        <li class="list-group-item">密码：<input type="text" name="password" v-model="dep.password"></li>
+                        <li class="list-group-item">
+                            所在部门：<label >
+                            <select name="departName" v-model="dep.departId" class="xlk">
+                                <option v-for="item in list.departList" :value="item.departId">{{item.departName}}</option>
+                            </select>
+                        </label>
+                        </li>
+                        <li class="list-group-item">性别：
+                            <label >
+                                <select name="Gender" v-model="dep.gender" class="xl">
+                                    <option value="1">男</option>
+                                    <option value="0">女</option>
+                                </select>
+                            </label>
+                        </li>
+                        <li class="list-group-item">所在职位：<input type="text" class="in1" name="roleId" v-model="dep.roleId"></li>
+                        <li class="list-group-item">用户状态：<input type="text" class="in1" name="UserState" v-model="dep.userState"></li>
+                        <li class="list-group-item">
+                            <button class="btn btn-success a1"  @click="update" >修改成功</button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(function (){
+        const  vue_app = ({
+            data(){
+                return{
+                    list:getMsg(null,null,1,5),
+                    dep:{},
+                    page:1,
+                    addStaff:{
+                        userName:"",
+                        password:"",
+                        departId:"",
+                        gender:"",
+                        roleld:"",
+                        userState:"",
+                    },
+                    delUserinfoId:[],
+                    userName:null,
+                    departName:null,
+                }
+            },
+            methods:{
+                toPage:function (page){//分页
+                    this.list=getMsg(this.userName,this.departName,page,5)
+                },
+                search(){//小查询
+                    this.list = getMsg(this.userName,this.departName,1,5)
+                },
+                addDate:function (){//添加
+                    $.ajax({
+                        type: "post",
+                        url: "../../StaffServlet?flag=insert",
+                        data:$("#form-add").serialize(),
+                        success:function (res) {
+                            location.reload()
+                        }
+                    })
+                },
+                delUserinfo: function (){//删除
+                    //获取要删除的id
+                    if (this.delUserinfoId.length === 0 ){
+                        alert("没有要删除的学生id")
+                        return;
+                    }
+                    $.ajax({
+                        type:"post",
+                        url:"../../StaffServlet?flag=delete",
+                        data:{
+                            "ids" : this.delUserinfoId.join(",")
+                        },
+                        success:function (data){
+                            location.reload();
+                        }
+                    })
+                },
+                upData:function (m){//修改
+                    this.dep = m; //将参数赋值给tea
+                    console.log(this.dep)
+                },
+                update:function (){
+                    console.log(this.dep)
+                    $.ajax({
+                        type:"post",
+                        url:"../../StaffServlet?flag=update",
+                        data:this.dep,
+                        success:function (data){
+                            location.reload();
+                        }
+                    })
+                },
+            },
+            mounted(){
+                console.log(this.list)
+            }
+        })
+        const VueApp = Vue.createApp(vue_app).mount("#main")
+    })
+
+    /**
+     * 查询
+     * @returns {*}
+     */
+    function getMsg(userName, departName, page, limit){
+        let list;
+        $.ajax({
+            type:"post",
+            url:"../../StaffServlet?flag=select",
+            data:{"userName":userName, "departName":departName, "page":page,"limit":limit},
+            async:false,
+            dataType:"json",
+            success(res){
+                list = res
+                console.log(res)
+            }
+        })
+        return list;
+    }
+</script>
+</body>
+</html>

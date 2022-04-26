@@ -13,6 +13,11 @@ import java.util.Map;
 public class DepartinfoDaoImpl implements DepartinfoDao {
 
     QueryRunner queryRunner = new QueryRunner(DBPool.getDS());
+
+    /**
+     * 添加
+     * @param map
+     */
     @Override
     public void addDepartinfo(Map<String, String> map) {
         //编写sql 语言
@@ -30,9 +35,12 @@ public class DepartinfoDaoImpl implements DepartinfoDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
+    /**
+     * 查询
+     * @return
+     */
     @Override
     public List<Departinfo> selDp() {
         String sql = "select * from departinfo";
@@ -44,11 +52,40 @@ public class DepartinfoDaoImpl implements DepartinfoDao {
         return null;
     }
 
+    /**
+     * 删除
+     * @param ids
+     * @return
+     */
     @Override
-    public int upDp(String ids) {
-        String sql = "delete from departInfo where departId in ("+ids+")";
+    public int delup(String ids) {
+            String sql = "delete from departInfo where departId in ('"+ids+"')";
+            try {
+                return queryRunner.update(sql);
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        return 0;
+    }
+
+    /**
+     * 修改
+     * @param param
+     * @return
+     */
+    @Override
+    public int upDp(Map<String, String> param) {
+        String sql1 = "update departinfo set departName=?,principalUser=?,ConnectTeNo=?,connectMobileTelNo=?,faxes=? where departId=?";
+        Object[] obj = new Object[6];
+        obj[0] = param.get("departName");
+        obj[1] = param.get("principalUser");
+        obj[2] = param.get("connectTeNo");
+        obj[3] = param.get("connectMobileTelNo");
+        obj[4] = param.get("faxes");
+        obj[5] = param.get("departId");
+
         try {
-            return queryRunner.update(sql);
+            return queryRunner.update(sql1,obj);
         } catch (SQLException e) {
             e.printStackTrace();
         }

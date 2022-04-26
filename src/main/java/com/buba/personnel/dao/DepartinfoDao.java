@@ -19,5 +19,17 @@ public interface DepartinfoDao {
      */
     List<Departinfo> selDp();
 
-    int upDp(String ids);
+    /**
+     * 删除
+     * @param ids
+     * @return
+     */
+    int delup(String ids);
+
+    /**
+     * 修改
+     * @param param
+     * @return
+     */
+    int upDp(Map<String, String> param);
 }

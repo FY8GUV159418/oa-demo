@@ -36,7 +36,19 @@ public class DepartinfoServiceImpl implements DepartinfoService {
      * @return
      */
     @Override
-    public int upDp(String ids) {
-        return departinfoDao.upDp(ids);
+    public int delup(String ids) {
+        return departinfoDao.delup(ids);
     }
+
+    /**
+     * 修改
+     * @param param
+     * @return
+     */
+    @Override
+    public int upDp(Map<String, String> param) {
+        return departinfoDao.upDp(param);
+    }
+
+
 }

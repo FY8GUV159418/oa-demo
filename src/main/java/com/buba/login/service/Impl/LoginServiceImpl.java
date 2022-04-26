@@ -13,4 +13,9 @@ public class LoginServiceImpl implements LoginService {
     public UserInfo login(Map<String, String> param) {
         return loginDao.login(param);
     }
+
+    @Override
+    public void addlogin(Map<String, String> paramMap) {
+        loginDao.addlogin(paramMap);
+    }
 }
